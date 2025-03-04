@@ -11,62 +11,58 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
 
-    - run: npm ci
+      - run: npm ci
 
-    - run: npm run build --if-present
+      - run: npm run build --if-present
 
-    # Start the server in the background
-    - name: Start server
-      run: npm start &
-      env:
-        PORT: 3000
+      # Start the server in the background
+      - name: Start server
+        run: npm start &
+        env:
+          PORT: 3000
 
-    # Wait for the server to start
-    - name: Wait for server
-      run: sleep 5
+      # Wait for the server to start
+      - name: Wait for server
+        run: sleep 5
 
-    # Run tests
-    - run: npm test
+      # Run tests
+      - run: npm test
 
-    # Run pa11y and generate a report
-    - name: Run pa11y accessibility tests
-      run: |
-        mkdir -p reports
-        pa11y http://localhost:3000 > reports/pa11y-report.txt
+      # Run pa11y and generate a report
+      - name: Run pa11y accessibility tests
+        run: |
+          mkdir -p reports
+          pa11y http://localhost:3000 > reports/pa11y-report.txt
 
-    # Upload the pa11y report as an artifact
-    - name: Upload pa11y report
-      uses: actions/upload-artifact@v4
-      with:
-        name: pa11y-report
-        path: reports/pa11y-report.txt
+      # Upload the pa11y report as an artifact
+      - name: Upload pa11y report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pa11y-report
+          path: reports/pa11y-report.txt
 
-    # Install Lighthouse
-    - name: Install Lighthouse
-      run: npm install -g lighthouse
+      # Install Lighthouse
+      - name: Install Lighthouse
+        run: npm install -g lighthouse
 
-    # Run Lighthouse and generate a report
-    - name: Run Lighthouse
-      run: |
-        mkdir -p reports
-        lighthouse http://localhost:3000 --output=html --output-path=reports/lighthouse-report.html
+      # Run Lighthouse and generate a report
+      - name: Run Lighthouse
+        run: |
+          mkdir -p reports
+          lighthouse http://localhost:3000 --output=html --output-path=reports/lighthouse-report.html
 
-    # Upload the Lighthouse report as an artifact
-    - name: Upload Lighthouse report
-      uses: actions/upload-artifact@v4
-      with:
-        name: lighthouse-report
-        path: reports/lighthouse-report.html
+      # Upload the Lighthouse report as an artifact
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: reports/lighthouse-report.html
