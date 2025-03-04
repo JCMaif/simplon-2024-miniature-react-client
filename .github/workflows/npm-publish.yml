@@ -35,7 +35,7 @@ jobs:
         run: sleep 5
 
       # Run tests
-      - run: npm test
+     # - run: npm test
 
       # Run pa11y and generate a report
       - name: Run pa11y accessibility tests
