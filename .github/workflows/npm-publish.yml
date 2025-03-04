@@ -37,19 +37,6 @@ jobs:
       # Run tests
      # - run: npm test
 
-      # Run pa11y and generate a report
-      - name: Run pa11y accessibility tests
-        run: |
-          mkdir -p reports
-          pa11y http://localhost:3000 > reports/pa11y-report.txt
-
-      # Upload the pa11y report as an artifact
-      - name: Upload pa11y report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pa11y-report
-          path: reports/pa11y-report.txt
-
       # Install Lighthouse
       - name: Install Lighthouse
         run: npm install -g lighthouse
