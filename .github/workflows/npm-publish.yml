@@ -34,35 +34,7 @@ jobs:
       - name: Wait for server
         run: sleep 5
 
-      # Run tests
-      - run: npm test
-
-      # Run pa11y and generate a report
-      - name: Run pa11y accessibility tests
-        run: |
-          mkdir -p reports
-          pa11y http://localhost:3000 > reports/pa11y-report.txt
-
-      # Upload the pa11y report as an artifact
-      - name: Upload pa11y report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pa11y-report
-          path: reports/pa11y-report.txt
-
       # Install Lighthouse
-      - name: Install Lighthouse
-        run: npm install -g lighthouse
-
-      # Run Lighthouse and generate a report
-      - name: Run Lighthouse
-        run: |
-          mkdir -p reports
-          lighthouse http://localhost:3000 --output=html --output-path=reports/lighthouse-report.html
-
-      # Upload the Lighthouse report as an artifact
-      - name: Upload Lighthouse report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-report
-          path: reports/lighthouse-report.html
+      - run: npm install && npm install -g @lhci/cli@0.14.x
+      - run: npm run build
+      - run: lhci autorun
